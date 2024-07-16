@@ -84,9 +84,9 @@ def main():
                         help='number of epochs to train (default: 80)')
     parser.add_argument('--dataset', type=str, default="set1",
                         help='Split strategy (set1/set2/set3 default: set1)')
-    parser.add_argument('--rundir', type=str, required=True,default="",
+    parser.add_argument('--rundir', type=str, required=False,default="/home/wangrui/gitcode/OpenABC/models/classification/result",
                         help='Output directory path to store result')
-    parser.add_argument('--datadir', type=str, required=True, default="",
+    parser.add_argument('--datadir', type=str, required=False, default="/home/wangrui/OPENABCD/OPENABC2_DATASET",
                         help='Dataset directory containing processed dataset, train test split file csvs')
     args = parser.parse_args()
 

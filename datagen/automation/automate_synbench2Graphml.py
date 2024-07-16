@@ -5,11 +5,11 @@ import networkx as nx
 import argparse,os,re
 import pandas as pd
 
-homeDir = None#os.environ["HOME"]
-graphmlDataFolder = None #os.path.join(homeDir,"OPENABC_DATASET","graphml")
-benchDataFolder = None #os.path.join(homeDir,"OPENABC_DATASET","bench")
-scriptsDataFolder = None #os.path.join(homeDir,"OPENABC_DATASET","synScripts")
-libraryCellFolder = None #os.path.join(homeDir,"OPENABC_DATASET","lib")
+homeDir = '/home/wangrui/OPENABCD'#os.environ["HOME"]
+graphmlDataFolder = '/home/wangrui/OPENABCD/graphml' #os.path.join(homeDir,"OPENABC_DATASET","graphml")
+benchDataFolder = '/home/wangrui/OPENABCD/bench' #os.path.join(homeDir,"OPENABC_DATASET","bench")
+scriptsDataFolder = '/home/wangrui/OPENABCD/synScripts' #os.path.join(homeDir,"OPENABC_DATASET","synScripts")
+libraryCellFolder = '/home/wangrui/OPENABCD/lib' #os.path.join(homeDir,"OPENABC_DATASET","lib")
 
 designSet1 = ['i2c','spi','des3_area','ss_pcm','usb_phy','sasc','wb_dma','simple_spi']
 designSet2 = ['dynamic_node','aes','pci','ac97_ctrl','mem_ctrl','tv80','fpu']
@@ -19,7 +19,7 @@ designSet5 = ['dft','idft','fir','iir','sha256','swerv']
 
 
 designs = designSet1+designSet2+designSet3+designSet4+designSet5
-numSynthesizedDesigns = 1500
+numSynthesizedDesigns = 2
 numSynthesisFlows = 20
 
 
@@ -34,15 +34,16 @@ def processAIGBench():
             shutil.rmtree(desGraphmlFolder)
         os.mkdir(desGraphmlFolder)
         for i in range(numSynthesizedDesigns):
+            # shellScriptFile.write("mkdir ",+desGraphmlFolder)
             desSynFolder = os.path.join(desGraphmlFolder, "syn" + str(i))
             mkdirSynCmd = "mkdir "+desSynFolder
             shellScriptFile.write(mkdirSynCmd+"\n")
             # Create temp directory and unzip bench files to the folder.
-            tempDir = os.path.join(srcBenchFolder,"syn"+str(i))
-            mkdirCmd = "mkdir "+tempDir
-            unzipCmdOfBenchFiles = "unzip -q "+tempDir+".zip -d "+tempDir
-            shellScriptFile.write(mkdirCmd+"\n")
-            shellScriptFile.write(unzipCmdOfBenchFiles+"\n")
+            # tempDir = os.path.join(srcBenchFolder,"syn"+str(i))
+            # mkdirCmd = "mkdir "+tempDir
+            # unzipCmdOfBenchFiles = "unzip -q "+tempDir+".zip -d "+tempDir
+            # shellScriptFile.write(mkdirCmd+"\n")
+            # shellScriptFile.write(unzipCmdOfBenchFiles+"\n")
             for j in range(1,numSynthesisFlows+1):
                 benchFilePath = os.path.join(srcBenchFolder,"syn"+str(i),des + "_syn" + str(i) + "_step" + str(j) + ".bench")
                 benchAig2GmlRunScript = "python andAIG2Graphml.py --bench "+benchFilePath+" --gml "+desSynFolder + " &"
@@ -50,8 +51,8 @@ def processAIGBench():
             shellScriptFile.write("wait < <(jobs -p)\n")
             zipFolderCmd = "zip -q -j -r "+desSynFolder+".zip "+desSynFolder+"/"
             shellScriptFile.write(zipFolderCmd+"\n")
-            shellScriptFile.write("rm -fr "+tempDir+os.sep+"\n")
-            shellScriptFile.write("rm -fr "+desSynFolder+os.sep+"\n")
+            # shellScriptFile.write("rm -fr "+tempDir+os.sep+"\n")
+            # shellScriptFile.write("rm -fr "+desSynFolder+os.sep+"\n")
         shellScriptFile.close()
 
     nohupShellScriptFile = os.path.join(graphmlDataFolder,"nohup_gmlGeneration.sh")
@@ -78,8 +79,8 @@ def parseCmdLineArgs():
     return parser.parse_args()
 
 def main():
-    cmdArgs = parseCmdLineArgs()
-    setGlobalAndEnvironmentVars(cmdArgs)
+    # cmdArgs = parseCmdLineArgs()
+    # setGlobalAndEnvironmentVars(cmdArgs)
     processAIGBench()
 
 if __name__ == '__main__':

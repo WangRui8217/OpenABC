@@ -8,11 +8,11 @@ designSet3 = ['wb_conmax','tinyRocket','aes_xcrypt','aes_secworks']
 designSet4 = ['jpeg','bp_be','ethernet','vga_lcd','picosoc']
 designSet5 = ['dft','idft','fir','iir','sha256']
 
-homeDir = None
-benchDataFolder = None
-statsDataFolder = None
+homeDir = '/home/wangrui/OPENABCD'
+benchDataFolder = '/home/wangrui/OPENABCD/bench'
+statsDataFolder = '/home/wangrui/OPENABCD/statistics'
 designs = designSet1+designSet2+designSet3+designSet4+designSet5
-NUM_SYNTHESIZED_DESIGNS = 1500
+NUM_SYNTHESIZED_DESIGNS = 2
 csvDelimiter = ","
 
 
@@ -26,8 +26,9 @@ def getFileLines(filePath):
 
 def collectAreaAndDelay():
     adpFolder = osp.join(statsDataFolder,"adp")
+    # print(adpFolder)
     if not os.path.exists(adpFolder):
-        os.mkdir(adpFolder)
+        os.makedirs(adpFolder, exist_ok=True)
     for des in designs:
         desLogDir = osp.join(benchDataFolder,des,"log_"+des)
         csv_file = os.path.join(adpFolder, 'adp_'+des+'.csv')
@@ -51,12 +52,12 @@ def setGlobalAndEnvironmentVars(cmdArgs):
 def parseCmdLineArgs():
     parser = argparse.ArgumentParser(prog='Final AIG area and delay Collection', description="Circuit characteristics")
     parser.add_argument('--version',action='version', version='1.0.0')
-    parser.add_argument('--home',required=True, help="OpenABC dataset home path")
+    parser.add_argument('--home',required=False, default='/home/wangrui/OPENABCD',help="OpenABC dataset home path")
     return parser.parse_args()
 
 def main():
-    cmdArgs = parseCmdLineArgs()
-    setGlobalAndEnvironmentVars(cmdArgs)
+    # cmdArgs = parseCmdLineArgs()
+    # setGlobalAndEnvironmentVars(cmdArgs)
     collectAreaAndDelay()
 
 

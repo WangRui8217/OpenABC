@@ -1,15 +1,14 @@
 import os, sys,random,shutil
 import argparse
 
-homeDir = None#os.environ["HOME"]
-srcFolder = None #sys.argv[1]
+homeDir = '/home/wangrui/OPENABCD'#os.environ["HOME"]
+srcFolder = '/home/wangrui/OPENABCD/bench/referenceScripts' #sys.argv[1]
 # Src folder is a 'design' folder under abcScripts from where the scripts to be copied.
-graphDataFolder = None #os.path.join(homeDir,"OPENABC_DATASET","bench")
-scriptsDataFolder = None #os.path.join(homeDir,"OPENABC_DATASET","synScripts")
-libraryCellFolder = None #os.path.join(homeDir,"OPENABC_DATASET","lib")
+graphDataFolder = '/home/wangrui/OPENABCD/bench' #os.path.join(homeDir,"OPENABC_DATASET","bench")
+scriptsDataFolder = '/home/wangrui/OPENABCD/synScripts' #os.path.join(homeDir,"OPENABC_DATASET","synScripts")
+libraryCellFolder = '/home/wangrui/OPENABCD/lib' #os.path.join(homeDir,"OPENABC_DATASET","lib")
 
-
-numSynthesizedScript = 1500
+numSynthesizedScript = 10
 delimiter = "\n"
 designSet1 = ['i2c','spi','des3_area','ss_pcm','usb_phy','sasc','wb_dma','simple_spi']
 designSet2 = ['dynamic_node','aes','pci','ac97_ctrl','mem_ctrl','tv80','fpu']
@@ -36,10 +35,15 @@ def genSynthesisScripts():
             scriptFile = open(scriptFilePath, 'w+')
             readLibLine = "read "+os.path.join(libraryCellFolder,"nangate45.lib")+delimiter
             scriptFile.write(readLibLine)
-            fileLines[1] = "read_bench "+graphDumpFolder+os.sep+des+"_orig.bench"+delimiter
+            fileLines[1] = "read_bench "+graphDumpFolder+"_orig.bench"+delimiter
             scriptFile.write(fileLines[1])
             scriptFile.write("strash"+delimiter)
             firstPathFileName = os.path.join(graphDumpFolder, "syn" + str(i),des + "_syn" + str(i) + "_step0.bench"+delimiter)
+            if(not os.path.exists(firstPathFileName)):
+                directory = os.path.dirname(firstPathFileName)
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
+                open(firstPathFileName, 'w').close()
             dumpFirstGraphLine = "write_bench -l " + firstPathFileName
             scriptFile.write(dumpFirstGraphLine)
             numSteps = 1
@@ -47,6 +51,11 @@ def genSynthesisScripts():
                 scriptFile.write(line)
                 intermediatePathFileName = os.path.join(graphDumpFolder,"syn"+str(i),des+"_syn"+str(i)+"_step"+str(numSteps)+".bench"+delimiter)
                 dumpIntermediateGraphLine = "write_bench -l " + intermediatePathFileName
+                if(not os.path.exists(intermediatePathFileName)):
+                    directory = os.path.dirname(intermediatePathFileName)
+                    if not os.path.exists(directory):
+                        os.makedirs(directory)
+                    open(intermediatePathFileName, 'w').close()
                 scriptFile.write(dumpIntermediateGraphLine)
                 numSteps+=1
             scriptFile.write("map -B 0.9"+delimiter+"topo"+delimiter+"stime -c"+delimiter)
@@ -66,13 +75,13 @@ def setGlobalAndEnvironmentVars(cmdArgs):
 def parseCmdLineArgs():
     parser = argparse.ArgumentParser(prog='SYNTHESIS RECIPE GENERATOR', description="Circuit characteristics")
     parser.add_argument('--version',action='version', version='1.0.0')
-    parser.add_argument('--home',required=True, help="OpenABC dataset home path")
-    parser.add_argument('--script', required=True, help="Sample script folder path of 1500 synthesis scripts")
+    parser.add_argument('--home',required=False, help="OpenABC dataset home path")
+    parser.add_argument('--script', required=False, help="Sample script folder path of 1500 synthesis scripts")
     return parser.parse_args()
 
 def main():
-    cmdArgs = parseCmdLineArgs()
-    setGlobalAndEnvironmentVars(cmdArgs)
+    # cmdArgs = parseCmdLineArgs()
+    # setGlobalAndEnvironmentVars(cmdArgs)
     genSynthesisScripts()
 
 if __name__ == '__main__':

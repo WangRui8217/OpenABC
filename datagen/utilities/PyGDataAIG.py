@@ -32,7 +32,7 @@ nodeType = {
 
 edgeType = { 1:"NOT", 0:'BUFF'}
 
-numSynthesized = 1500
+numSynthesized = 10
 
 def zipProcessedFolder(path):
     cmd = 'zip -r -q -j '+path+'.zip '+path+os.sep

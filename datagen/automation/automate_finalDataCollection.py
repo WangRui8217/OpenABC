@@ -4,9 +4,9 @@ import argparse,os,re
 import pandas as pd
 import os.path as osp
 
-homeDir = None#os.environ["HOME"]
-graphDataFolder = None #os.path.join(homeDir,"OPENABC_DATASET","bench")
-statsDataFolder = None #os.path.join(homeDir,"OPENABC_DATASET","synScripts")
+homeDir = '/home/wangrui/OPENABCD'#os.environ["HOME"]
+graphDataFolder = '/home/wangrui/OPENABCD/bench' #os.path.join(homeDir,"OPENABC_DATASET","bench")
+statsDataFolder = '/home/wangrui/OPENABCD/synScripts' #os.path.join(homeDir,"OPENABC_DATASET","synScripts")
 
 designSet1 = ['i2c','spi','des3_area','ss_pcm','usb_phy','sasc','wb_dma','simple_spi']
 designSet2 = ['dynamic_node','aes','pci','ac97_ctrl','mem_ctrl','tv80','fpu']
@@ -14,8 +14,8 @@ designSet3 = ['wb_conmax','tinyRocket','aes_xcrypt','aes_secworks']
 designSet4 = ['jpeg','bp_be','ethernet','vga_lcd','picosoc']
 designSet5 = ['dft','idft','fir','iir','sha256']
 
-
-designs = designSet1+designSet2+designSet3+designSet4+designSet5
+designs = ['aes','ac97_ctrl']
+# designs = designSet1+designSet2+designSet3+designSet4+designSet5
 
 def collectFinalStats():
     global graphDataFolder,statsDataFolder
@@ -42,8 +42,8 @@ def parseCmdLineArgs():
     return parser.parse_args()
 
 def main():
-    cmdArgs = parseCmdLineArgs()
-    setGlobalAndEnvironmentVars(cmdArgs)
+    # cmdArgs = parseCmdLineArgs()
+    # setGlobalAndEnvironmentVars(cmdArgs)
     collectFinalStats()
 
 if __name__ == '__main__':
